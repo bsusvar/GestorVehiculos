@@ -4,9 +4,9 @@ public class Coche extends Vehiculo {
 
     private TipoCambio tipoCambio;
     private TipoCombustible tipoCombustible;
-    private int numeroPuertas;
+    private NumeroPuertas numeroPuertas;
 
-    public Coche(String matricula, String marca, String modelo, double velocidadMaxima, TipoCambio tipoCambio, TipoCombustible tipoCombustible, int numeroPuertas) {
+    public Coche(String matricula, String marca, String modelo, double velocidadMaxima, TipoCambio tipoCambio, TipoCombustible tipoCombustible, NumeroPuertas numeroPuertas) {
         super(matricula, marca, modelo, velocidadMaxima);
         this.tipoCambio = tipoCambio;
         this.tipoCombustible = tipoCombustible;
@@ -53,11 +53,11 @@ public class Coche extends Vehiculo {
         super.setVelocidadMaxima(velocidadMaxima);
     }
 
-    public int getNumeroPuertas() {
+    public NumeroPuertas getNumeroPuertas() {
         return numeroPuertas;
     }
 
-    public void setNumeroPuertas(int numeroPuertas) {
+    public void setNumeroPuertas(NumeroPuertas numeroPuertas) {
         this.numeroPuertas = numeroPuertas;
     }
 
