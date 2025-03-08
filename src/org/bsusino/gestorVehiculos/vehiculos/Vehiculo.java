@@ -2,16 +2,22 @@ package org.bsusino.gestorVehiculos.vehiculos;
 
 public abstract class Vehiculo {
 
+	private Nombre nombre;
     private String matricula;
     private String marca;
     private String modelo;
     private double velocidadMaxima;
 
-    public Vehiculo(String matricula, String marca, String modelo, double velocidadMaxima) {
-        this.matricula = matricula;
+    public Vehiculo(Nombre nombre, String matricula, String marca, String modelo, double velocidadMaxima) {
+    	this.nombre = nombre;
+    	this.matricula = matricula;
         this.marca = marca;
         this.modelo = modelo;
         this.velocidadMaxima = velocidadMaxima;
+    }
+    
+    public Nombre getNombre() {
+    return nombre;
     }
 
     public String getMatricula() {

@@ -2,90 +2,92 @@ package org.bsusino.gestorVehiculos.vehiculos;
 
 public class Coche extends Vehiculo {
 
-    private TipoCambio tipoCambio;
-    private TipoCombustible tipoCombustible;
-    private NumeroPuertas numeroPuertas;
+	private TipoCambio tipoCambio;
+	private TipoCombustible tipoCombustible;
+	private NumeroPuertas numeroPuertas;
 
-    public Coche(String matricula, String marca, String modelo, double velocidadMaxima, TipoCambio tipoCambio, TipoCombustible tipoCombustible, NumeroPuertas numeroPuertas) {
-        super(matricula, marca, modelo, velocidadMaxima);
-        this.tipoCambio = tipoCambio;
-        this.tipoCombustible = tipoCombustible;
-        this.numeroPuertas = numeroPuertas;
-    }
+	public Coche(Nombre nombre, String matricula, String marca, String modelo, double velocidadMaxima,
+			TipoCambio tipoCambio, TipoCombustible tipoCombustible, NumeroPuertas numeroPuertas) {
+		super(nombre, matricula, marca, modelo, velocidadMaxima);
+		this.tipoCambio = tipoCambio;
+		this.tipoCombustible = tipoCombustible;
+		this.numeroPuertas = numeroPuertas;
+	}
 
-    @Override
-    public String getMatricula() {
-        return super.getMatricula();
-    }
+	@Override
+	public Nombre getNombre() {
+		return super.getNombre();
+	}
 
-    @Override
-    public void setMatricula(String matricula) {
-        super.setMatricula(matricula);
-    }
+	@Override
+	public String getMatricula() {
+		return super.getMatricula();
+	}
 
-    @Override
-    public String getMarca() {
-        return super.getMarca();
-    }
+	@Override
+	public void setMatricula(String matricula) {
+		super.setMatricula(matricula);
+	}
 
-    @Override
-    public void setMarca(String marca) {
-        super.setMarca(marca);
-    }
+	@Override
+	public String getMarca() {
+		return super.getMarca();
+	}
 
-    @Override
-    public String getModelo() {
-        return super.getModelo();
-    }
+	@Override
+	public void setMarca(String marca) {
+		super.setMarca(marca);
+	}
 
-    @Override
-    public void setModelo(String modelo) {
-        super.setModelo(modelo);
-    }
+	@Override
+	public String getModelo() {
+		return super.getModelo();
+	}
 
-    @Override
-    public double getVelocidadMaxima() {
-        return super.getVelocidadMaxima();
-    }
+	@Override
+	public void setModelo(String modelo) {
+		super.setModelo(modelo);
+	}
 
-    @Override
-    public void setVelocidadMaxima(double velocidadMaxima) {
-        super.setVelocidadMaxima(velocidadMaxima);
-    }
+	@Override
+	public double getVelocidadMaxima() {
+		return super.getVelocidadMaxima();
+	}
 
-    public NumeroPuertas getNumeroPuertas() {
-        return numeroPuertas;
-    }
+	@Override
+	public void setVelocidadMaxima(double velocidadMaxima) {
+		super.setVelocidadMaxima(velocidadMaxima);
+	}
 
-    public void setNumeroPuertas(NumeroPuertas numeroPuertas) {
-        this.numeroPuertas = numeroPuertas;
-    }
+	public NumeroPuertas getNumeroPuertas() {
+		return numeroPuertas;
+	}
 
-    public TipoCambio getTipoCambio() {
-        return tipoCambio;
-    }
+	public void setNumeroPuertas(NumeroPuertas numeroPuertas) {
+		this.numeroPuertas = numeroPuertas;
+	}
 
-    public void setTipoCambio(TipoCambio tipoCambio) {
-        this.tipoCambio = tipoCambio;
-    }
+	public TipoCambio getTipoCambio() {
+		return tipoCambio;
+	}
 
-    public TipoCombustible getTipoCombustible() {
-        return tipoCombustible;
-    }
+	public void setTipoCambio(TipoCambio tipoCambio) {
+		this.tipoCambio = tipoCambio;
+	}
 
-    public void setTipoCombustible(TipoCombustible tipoCombustible) {
-        this.tipoCombustible = tipoCombustible;
-    }
+	public TipoCombustible getTipoCombustible() {
+		return tipoCombustible;
+	}
 
-    @Override
-    public void mostrarInformacion() {
-        System.out.println("Información del coche:" +
-                "\n•Matrícula: " + getMatricula()
-                + "\n•Marca: " + getMarca()
-                + "\n•Modelo: " + getModelo()
-                + "\n•Velocidad máxima: " + getVelocidadMaxima()
-                + "\n•Tipo de cambio: " + getTipoCambio()
-                + "\n•Tipo de combustible: " + tipoCombustible
-                + "\n•Número de puertas: " + getNumeroPuertas());
-    }
+	public void setTipoCombustible(TipoCombustible tipoCombustible) {
+		this.tipoCombustible = tipoCombustible;
+	}
+
+	@Override
+	public void mostrarInformacion() {
+		System.out.println("\n•Matrícula: " + getMatricula() + "\n•Marca: " + getMarca()
+				+ "\n•Modelo: " + getModelo() + "\n•Velocidad máxima: " + getVelocidadMaxima() + "\n•Tipo de cambio: "
+				+ getTipoCambio() + "\n•Tipo de combustible: " + tipoCombustible + "\n•Número de puertas: "
+				+ getNumeroPuertas());
+	}
 }

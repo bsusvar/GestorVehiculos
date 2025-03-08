@@ -2,81 +2,83 @@ package org.bsusino.gestorVehiculos.vehiculos;
 
 public class Moto extends Vehiculo {
 
-    private TipoCombustible tipoCombustible;
-    private Cilindrada cilindrada;
+	private TipoCombustible tipoCombustible;
+	private Cilindrada cilindrada;
 
-    public Moto(String matricula, String marca, String modelo, double velocidadMaxima, Cilindrada cilindrada, TipoCombustible tipoCombustible) {
-        super(matricula, marca, modelo, velocidadMaxima);
-        this.cilindrada = cilindrada;
-        this.tipoCombustible = tipoCombustible;
+	public Moto(Nombre nombre, String matricula, String marca, String modelo, double velocidadMaxima,
+			Cilindrada cilindrada, TipoCombustible tipoCombustible) {
+		super(nombre, matricula, marca, modelo, velocidadMaxima);
+		this.cilindrada = cilindrada;
+		this.tipoCombustible = tipoCombustible;
 
-    }
+	}
 
-    @Override
-    public String getMatricula() {
-        return super.getMatricula();
-    }
+	@Override
+	public Nombre getNombre() {
+		return super.getNombre();
+	}
 
-    @Override
-    public void setMatricula(String matricula) {
-        super.setMatricula(matricula);
-    }
+	@Override
+	public String getMatricula() {
+		return super.getMatricula();
+	}
 
-    @Override
-    public String getMarca() {
-        return super.getMarca();
-    }
+	@Override
+	public void setMatricula(String matricula) {
+		super.setMatricula(matricula);
+	}
 
-    @Override
-    public void setMarca(String marca) {
-        super.setMarca(marca);
-    }
+	@Override
+	public String getMarca() {
+		return super.getMarca();
+	}
 
-    @Override
-    public String getModelo() {
-        return super.getModelo();
-    }
+	@Override
+	public void setMarca(String marca) {
+		super.setMarca(marca);
+	}
 
-    @Override
-    public void setModelo(String modelo) {
-        super.setModelo(modelo);
-    }
+	@Override
+	public String getModelo() {
+		return super.getModelo();
+	}
 
-    @Override
-    public double getVelocidadMaxima() {
-        return super.getVelocidadMaxima();
-    }
+	@Override
+	public void setModelo(String modelo) {
+		super.setModelo(modelo);
+	}
 
-    @Override
-    public void setVelocidadMaxima(double velocidadMaxima) {
-        super.setVelocidadMaxima(velocidadMaxima);
-    }
+	@Override
+	public double getVelocidadMaxima() {
+		return super.getVelocidadMaxima();
+	}
 
-    public TipoCombustible getTipoCombustible() {
-        return tipoCombustible;
-    }
+	@Override
+	public void setVelocidadMaxima(double velocidadMaxima) {
+		super.setVelocidadMaxima(velocidadMaxima);
+	}
 
-    public void setTipoCombustible(TipoCombustible tipoCombustible) {
-        this.tipoCombustible = tipoCombustible;
-    }
+	public TipoCombustible getTipoCombustible() {
+		return tipoCombustible;
+	}
 
-    public Cilindrada getCilindrada() {
-        return cilindrada;
-    }
+	public void setTipoCombustible(TipoCombustible tipoCombustible) {
+		this.tipoCombustible = tipoCombustible;
+	}
 
-    public void setCilindrada(Cilindrada cilindrada) {
-        this.cilindrada = cilindrada;
-    }
+	public Cilindrada getCilindrada() {
+		return cilindrada;
+	}
 
-    @Override
-    public void mostrarInformacion() {
-        System.out.println("Información de la moto:" +
-                "\n•Matrícula: " + getMatricula()
-                + "\n•Marca: " + getMarca()
-                + "\n•Modelo: " + getModelo()
-                + "\n•Velocidad máxima: " + getVelocidadMaxima()
-                + "\n•Cilindrada: " + getCilindrada()
-                + "\n•Tipo de combustible: " + tipoCombustible);
-    }
+	public void setCilindrada(Cilindrada cilindrada) {
+		this.cilindrada = cilindrada;
+	}
+
+	@Override
+	public void mostrarInformacion() {
+		System.out.println("\n•Matrícula: " + getMatricula() + "\n•Marca: " + getMarca()
+				+ "\n•Modelo: " + getModelo() + "\n•Velocidad máxima: " + getVelocidadMaxima() + "\n•Cilindrada: "
+				+ getCilindrada() + "\n•Tipo de combustible: " + tipoCombustible);
+	}
 
 }
