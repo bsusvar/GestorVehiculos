@@ -14,51 +14,6 @@ public class Coche extends Vehiculo {
 		this.numeroPuertas = numeroPuertas;
 	}
 
-	@Override
-	public Nombre getNombre() {
-		return super.getNombre();
-	}
-
-	@Override
-	public String getMatricula() {
-		return super.getMatricula();
-	}
-
-	@Override
-	public void setMatricula(String matricula) {
-		super.setMatricula(matricula);
-	}
-
-	@Override
-	public String getMarca() {
-		return super.getMarca();
-	}
-
-	@Override
-	public void setMarca(String marca) {
-		super.setMarca(marca);
-	}
-
-	@Override
-	public String getModelo() {
-		return super.getModelo();
-	}
-
-	@Override
-	public void setModelo(String modelo) {
-		super.setModelo(modelo);
-	}
-
-	@Override
-	public double getVelocidadMaxima() {
-		return super.getVelocidadMaxima();
-	}
-
-	@Override
-	public void setVelocidadMaxima(double velocidadMaxima) {
-		super.setVelocidadMaxima(velocidadMaxima);
-	}
-
 	public NumeroPuertas getNumeroPuertas() {
 		return numeroPuertas;
 	}
@@ -85,9 +40,9 @@ public class Coche extends Vehiculo {
 
 	@Override
 	public void mostrarInformacion() {
-		System.out.println("\n•Matrícula: " + getMatricula() + "\n•Marca: " + getMarca()
-				+ "\n•Modelo: " + getModelo() + "\n•Velocidad máxima: " + getVelocidadMaxima() + "\n•Tipo de cambio: "
-				+ getTipoCambio() + "\n•Tipo de combustible: " + tipoCombustible + "\n•Número de puertas: "
-				+ getNumeroPuertas());
+		System.out.println("\n• Matrícula: " + getMatricula() + "\n• Marca: " + getMarca() + "\n• Modelo: "
+				+ getModelo() + "\n• Velocidad máxima: " + getVelocidadMaxima() + " km/h" + "\n• Tipo de cambio: "
+				+ tipoCambio.getDescripcion() + "\n• Tipo de combustible: " + tipoCombustible.getDescripcion()
+				+ "\n• Número de puertas: " + numeroPuertas.getDescripcion());
 	}
 }

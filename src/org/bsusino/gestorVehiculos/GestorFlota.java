@@ -46,11 +46,17 @@ public class GestorFlota {
 	// numéricos y tres finales alfabéticos:
 	private static String regexNueveAntiguo = "[A-Z]{2}\\d{4}[A-Z]{3}$";
 
+	// Array de provincias que emplean una sola letra para identificarse en
+	// matrículas antiguas:
 	private static String[] provinciasUnaLetra = new String[] { "A", "B", "C", "H", "J", "L", "M", "O", "P", "S", "T",
 			"U", "Z" };
+
+	// Array de provincias que emplean dos letras para identificarse en matrículas
+	// antiguas:
 	private static String[] provinciasDobleLetra = new String[] { "VI", "AB", "AL", "AV", "BA", "PM", "BU", "CC", "CA",
 			"CS", "CR", "CO", "CU", "GE", "GR", "GU", "SS", "HU", "LE", "LU", "MA", "MU", "NA", "OR", "GC", "PO", "SA",
 			"TF", "SG", "SE", "SO", "TE", "TO", "VA", "BI", "ZA", "CE", "ML" };
+
 	private static List<Vehiculo> listaVehiculos = GestorFichero.cargarDesdeFichero();
 	private static int seleccionarOpcion;
 
@@ -91,13 +97,21 @@ public class GestorFlota {
 
 	public static void agregarVehiculo(List<Vehiculo> listaVehiculos) {
 		System.out.println("Indica si quieres registrar un coche (1) o una moto (2): ");
-		int seleccionarOpcion = input.nextInt();
+		int opcionVehiculo = input.nextInt();
 		Nombre nombre = null;
-		if (seleccionarOpcion == 1) {
-			nombre = Nombre.COCHE;
-		} else if (seleccionarOpcion == 2) {
-			nombre = Nombre.MOTO;
+		while (true) {
+			if (opcionVehiculo == 1) {
+				nombre = Nombre.COCHE;
+				break;
+			} else if (opcionVehiculo == 2) {
+				nombre = Nombre.MOTO;
+				break;
+			} else {
+				System.out.println("Opción no válida. Inténtalo de nuevo: ");
+				opcionVehiculo = input.nextInt();
+			}
 		}
+
 		input.nextLine();
 		System.out.println("Escribe la matrícula: ");
 		String matriculaUsuario = input.nextLine().toUpperCase().trim().replace(" ", "");
@@ -110,118 +124,131 @@ public class GestorFlota {
 		String velocidadMaximaUsuario = input.nextLine();
 		double velocidadMaxima = validarVelocidadMaxima(velocidadMaximaUsuario);
 
-		switch (seleccionarOpcion) {
+		switch (opcionVehiculo) {
 		case 1 -> {
-			TipoCambio tipoCambio = null;
-			TipoCombustible tipoCombustible = null;
-			NumeroPuertas numeroPuertas = null;
 			System.out.println("Selecciona si el tipo de cambio es manual (1) o automático (2): ");
-			seleccionarOpcion = input.nextInt();
-			switch (seleccionarOpcion) {
-			case 1 -> {
-				tipoCambio = TipoCambio.MANUAL;
-			}
-			case 2 -> {
-				tipoCambio = TipoCambio.AUTOMATICO;
-			}
-			default -> {
-				System.out.println("Valor no válido. Inténtalo otra vez: ");
-				input.nextInt();
-			}
-			}
+			TipoCambio tipoCambio = elegirTipoCambio();
 			System.out.println(
 					"Indica si el tipo de combustible es gasolina (1), diésel (2), híbrido (3) o eléctrico (4): ");
-			seleccionarOpcion = input.nextInt();
-			switch (seleccionarOpcion) {
-			case 1 -> {
-				tipoCombustible = TipoCombustible.GASOLINA;
-			}
-			case 2 -> {
-				tipoCombustible = TipoCombustible.DIESEL;
-			}
-			case 3 -> {
-				tipoCombustible = TipoCombustible.HIBRIDO;
-			}
-			case 4 -> {
-				tipoCombustible = TipoCombustible.ELECTRICO;
-			}
-			default -> {
-				System.out.println("Valor no válido. Inténtalo otra vez: ");
-				input.nextInt();
-			}
-			}
+			TipoCombustible tipoCombustible = elegirTipoCombustibleCoche();
 			System.out.println("Finalmente, introduce el número de puertas (2, 3, 4 o 5): ");
-			seleccionarOpcion = input.nextInt();
-			switch (seleccionarOpcion) {
-			case 2 -> {
-				numeroPuertas = NumeroPuertas.DOS_PUERTAS;
-			}
-			case 3 -> {
-				numeroPuertas = NumeroPuertas.TRES_PUERTAS;
-			}
-			case 4 -> {
-				numeroPuertas = NumeroPuertas.CUATRO_PUERTAS;
-			}
-			case 5 -> {
-				numeroPuertas = NumeroPuertas.CINCO_PUERTAS;
-			}
-			default -> {
-				System.out.println("Número no válido. Inténtalo otra vez: ");
-				input.nextInt();
-			}
-			}
+			NumeroPuertas numeroPuertas = elegirNumeroPuertas();
 			input.nextLine();
 			Vehiculo v = new Coche(nombre, matricula, marca, modelo, velocidadMaxima, tipoCambio, tipoCombustible,
 					numeroPuertas);
 			listaVehiculos.add(v);
 		}
+
 		case 2 -> {
-			TipoCombustible tipoCombustible = null;
-			Cilindrada cilindrada = null;
 			System.out.println("Indica si el tipo de combustible es gasolina (1) o eléctrico (2): ");
-			seleccionarOpcion = input.nextInt();
-			switch (seleccionarOpcion) {
-			case 1 -> {
-				tipoCombustible = TipoCombustible.GASOLINA;
-			}
-			case 2 -> {
-				tipoCombustible = TipoCombustible.ELECTRICO;
-			}
-			}
+			TipoCombustible tipoCombustible = elegirTipoCombustibleMoto();
 			System.out.println(
 					"Finalmente, selecciona si el tipo de cilindrada es baja (1), media (2), alta (3) o muy alta (4): ");
-			{
-				seleccionarOpcion = input.nextInt();
-				switch (seleccionarOpcion) {
-				case 1 -> {
-					cilindrada = Cilindrada.BAJA_CILINDRADA;
-				}
-				case 2 -> {
-					cilindrada = Cilindrada.MEDIA_CILINDRADA;
-				}
-				case 3 -> {
-					cilindrada = Cilindrada.ALTA_CILINDRADA;
-				}
-				case 4 -> {
-					cilindrada = Cilindrada.MUY_ALTA_CILINDRADA;
-				}
-				default -> {
-					System.out.println("Entrada inválida. Inténtalo otra vez: ");
-					input.nextInt();
-				}
-				}
-			}
+			Cilindrada cilindrada = elegirCilindrada();
 			input.nextLine();
-			Vehiculo v = new Moto(nombre, matricula, marca, modelo, velocidadMaxima, cilindrada, tipoCombustible);
+			Vehiculo v = new Moto(nombre, matricula, marca, modelo, velocidadMaxima, tipoCombustible, cilindrada);
 			listaVehiculos.add(v);
 		}
 		}
 		GestorFichero.guardarEnFichero(listaVehiculos);
 		System.out.println("Vehículo añadido con éxito. ");
+	}
+
+	private static TipoCambio elegirTipoCambio() {
+		switch (seleccionarOpcion) {
+		case 1 -> {
+			return TipoCambio.MANUAL;
+		}
+		case 2 -> {
+			return TipoCambio.AUTOMATICO;
+		}
+		default -> {
+			System.out.println("Valor no válido. Inténtalo otra vez: ");
+			return elegirTipoCambio();
+		}
+		}
+	}
+
+	private static TipoCombustible elegirTipoCombustibleCoche() {
+		switch (seleccionarOpcion) {
+		case 1 -> {
+			return TipoCombustible.GASOLINA;
+		}
+		case 2 -> {
+			return TipoCombustible.DIESEL;
+		}
+		case 3 -> {
+			return TipoCombustible.HIBRIDO;
+		}
+		case 4 -> {
+			return TipoCombustible.ELECTRICO;
+		}
+		default -> {
+			System.out.println("Valor no válido. Inténtalo otra vez: ");
+			return elegirTipoCombustibleCoche();
+		}
+		}
+	}
+
+	private static NumeroPuertas elegirNumeroPuertas() {
+		switch (seleccionarOpcion) {
+		case 2 -> {
+			return NumeroPuertas.DOS_PUERTAS;
+		}
+		case 3 -> {
+			return NumeroPuertas.TRES_PUERTAS;
+		}
+		case 4 -> {
+			return NumeroPuertas.CUATRO_PUERTAS;
+		}
+		case 5 -> {
+			return NumeroPuertas.CINCO_PUERTAS;
+		}
+		default -> {
+			System.out.println("Valor no válido. Inténtalo otra vez: ");
+			return elegirNumeroPuertas();
+		}
+		}
 
 	}
 
-	public static void buscarVehiculo(List<Vehiculo> listaVehiculos) {
+	private static TipoCombustible elegirTipoCombustibleMoto() {
+		switch (seleccionarOpcion) {
+		case 1 -> {
+			return TipoCombustible.GASOLINA;
+		}
+		case 2 -> {
+			return TipoCombustible.ELECTRICO;
+		}
+		default -> {
+			System.out.println("Valor no válido. Inténtalo otra vez: ");
+			return elegirTipoCombustibleMoto();
+		}
+		}
+	}
+
+	private static Cilindrada elegirCilindrada() {
+		switch (seleccionarOpcion) {
+		case 1 -> {
+			return Cilindrada.BAJA_CILINDRADA;
+		}
+		case 2 -> {
+			return Cilindrada.MEDIA_CILINDRADA;
+		}
+		case 3 -> {
+			return Cilindrada.ALTA_CILINDRADA;
+		}
+		case 4 -> {
+			return Cilindrada.MUY_ALTA_CILINDRADA;
+		}
+		default -> {
+			System.out.println("Valor no válido. Inténtalo otra vez: ");
+			return elegirCilindrada();
+		}
+		}
+	}
+
+	private static void buscarVehiculo(List<Vehiculo> listaVehiculos) {
 		input.nextLine();
 		System.out.println("Introduce la matrícula del vehículo que quieres buscar: ");
 		String matriculaUsuario = input.nextLine().toUpperCase().trim().replace(" ", "");
@@ -241,7 +268,7 @@ public class GestorFlota {
 		}
 	}
 
-	public static String validarMatricula(String matriculaUsuario) {
+	private static String validarMatricula(String matriculaUsuario) {
 
 		if (matriculaUsuario.length() == 6) {
 			// Matrículas antiguas de 6 caracteres con provincias de una letra
@@ -325,7 +352,7 @@ public class GestorFlota {
 		}
 	}
 
-	public static double validarVelocidadMaxima(String velocidadMaximaUsuario) {
+	private static double validarVelocidadMaxima(String velocidadMaximaUsuario) {
 
 		while (true) {
 			try {
@@ -342,7 +369,7 @@ public class GestorFlota {
 		}
 	}
 
-	public static void eliminarVehiculo(List<Vehiculo> listaVehiculos) {
+	private static void eliminarVehiculo(List<Vehiculo> listaVehiculos) {
 		input.nextLine();
 		System.out.println("Introduce la matrícula del vehículo a eliminar: ");
 		String matriculaUsuario = input.nextLine().toUpperCase().trim().replace(" ", "");
@@ -365,7 +392,7 @@ public class GestorFlota {
 		}
 	}
 
-	public static void mostrarVehiculos(List<Vehiculo> listaVehiculos) {
+	private static void mostrarVehiculos(List<Vehiculo> listaVehiculos) {
 		System.out.println(
 				"Indica si quieres consultar la información de los coches (1), de las motos (2) o de todos los vehículos (3): ");
 		seleccionarOpcion = input.nextInt();
@@ -400,11 +427,15 @@ public class GestorFlota {
 				System.out.println("\n");
 			}
 		}
+		default -> {
+			System.out.println("Opción no válida. Inténtalo de nuevo: ");
+			input.nextInt();
+		}
 		}
 		input.nextLine();
 	}
 
-	public static void continuarOperando() {
+	private static void continuarOperando() {
 		String respuestaUsuario;
 		System.out.println("¿Quieres realizar otra operación? (s/n)");
 		while (true) {
