@@ -1,8 +1,8 @@
 package org.bsusino.gestorVehiculos.vehiculos;
 
 public enum Cilindrada {
-	BAJA_CILINDRADA("Baja cilindrada"), MEDIA_CILINDRADA("Media cilindrada"), ALTA_CILINDRADA("Alta cilindrada"),
-	MUY_ALTA_CILINDRADA("Muy alta cilindrada");
+	BAJA_CILINDRADA("Baja"), MEDIA_CILINDRADA("Media"), ALTA_CILINDRADA("Alta"),
+	MUY_ALTA_CILINDRADA("Muy alta");
 
 	private String descripcion;
 

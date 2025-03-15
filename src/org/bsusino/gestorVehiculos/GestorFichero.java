@@ -51,7 +51,7 @@ public class GestorFichero {
 					Vehiculo v = new Moto(nombre, matricula, marca, modelo, velocidadMaxima, tipoCombustible,
 							cilindrada);
 					listaVehiculos.add(v);
-				} else {
+				} else if (partesLinea[0].equalsIgnoreCase("COCHE")) {
 					TipoCambio tipoCambio = TipoCambio.valueOf(partesLinea[5].trim());
 					TipoCombustible tipoCombustible = TipoCombustible.valueOf(partesLinea[6].trim());
 					NumeroPuertas numeroPuertas = NumeroPuertas.valueOf(partesLinea[7].trim());

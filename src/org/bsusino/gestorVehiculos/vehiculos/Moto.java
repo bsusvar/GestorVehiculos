@@ -31,9 +31,10 @@ public class Moto extends Vehiculo {
 
 	@Override
 	public void mostrarInformacion() {
-		System.out.println("\n• Matrícula: " + getMatricula() + "\n• Marca: " + getMarca() + "\n• Modelo: "
-				+ getModelo() + "\n• Velocidad máxima: " + getVelocidadMaxima() + " km/h" + "\n• Tipo de combustible: "
-				+ tipoCombustible.getDescripcion() + "\n• Cilindrada: " + cilindrada.getDescripcion());
+		System.out.println("• Tipo de vehículo: " + getNombre().getDescripcion() + "\n• Matrícula: " + getMatricula()
+				+ "\n• Marca: " + getMarca() + "\n• Modelo: " + getModelo() + "\n• Velocidad máxima: "
+				+ getVelocidadMaxima() + " km/h" + "\n• Tipo de combustible: " + tipoCombustible.getDescripcion()
+				+ "\n• Cilindrada: " + cilindrada.getDescripcion());
 	}
 
 }

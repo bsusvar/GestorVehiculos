@@ -19,6 +19,10 @@ public abstract class Vehiculo {
     public Nombre getNombre() {
     return nombre;
     }
+    
+    public void setNombre(Nombre nombre) {
+    	this.nombre = nombre;
+    }
 
     public String getMatricula() {
         return matricula;
