@@ -9,9 +9,12 @@ import java.util.Scanner;
 
 public class GestorFichero {
 
-	public static File archivo = new File("vehiculos.txt");
+	protected static File archivo = new File("vehiculos.txt");
 
-	public static void guardarEnFichero(List<Vehiculo> listaVehiculos) {
+	// Método que escribe en el fichero vehiculos.txt los datos contenidos en
+	// listaVehiculos
+	protected static void guardarEnFichero(List<Vehiculo> listaVehiculos) throws IOException {
+
 		try (FileWriter fw = new FileWriter(archivo, false); BufferedWriter escritor = new BufferedWriter(fw)) {
 			for (Vehiculo v : listaVehiculos) {
 				escritor.append(v.getNombre().toString()).append(", ").append(v.getMatricula()).append(", ")
@@ -34,7 +37,9 @@ public class GestorFichero {
 		}
 	}
 
-	public static List<Vehiculo> cargarDesdeFichero() {
+	// Método que recupera los datos existentes en el fichero vehiculos.txt y los
+	// añade a la lista
+	protected static List<Vehiculo> cargarDesdeFichero() {
 		List<Vehiculo> listaVehiculos = new ArrayList<>();
 		try (FileReader fr = new FileReader(archivo); Scanner lector = new Scanner(fr)) {
 			while (lector.hasNext()) {
@@ -62,7 +67,7 @@ public class GestorFichero {
 			}
 			return listaVehiculos;
 		} catch (IOException e) {
-			System.out.println("Error al cargar el fichero." + e.getMessage());
+			// Retorno de una lista vacía para evitar NullPointerException
 			return new ArrayList<>();
 		}
 

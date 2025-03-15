@@ -1,7 +1,7 @@
 package org.bsusino.gestorVehiculos;
 
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -21,21 +21,20 @@ public class GestorFlota {
 
 	private static Scanner input = new Scanner(System.in);
 
+	// Lista de vehículos cargada desde el fichero vehiculos.txt
 	private static List<Vehiculo> listaVehiculos = GestorFichero.cargarDesdeFichero();
-	private static String seleccionarOpcion;
 
 	public static void main(String[] args) {
 
-		boolean continuarOperacion = true;
+		// Menú principal del gestor de vehículos
 		System.out.print("Bienvenido/a al gestor de flota. ");
-		while (continuarOperacion) {
+		while (true) {
 			System.out.println(
 					"Indica qué operación quieres realizar: " + "\n1. Agregar vehículo" + "\n2. Eliminar vehículo"
 							+ "\n3. Buscar vehículos" + "\n4. Mostrar vehículos" + "\n0. Salir del programa");
 
 			try {
-				seleccionarOpcion = input.nextLine();
-				pedirInput(seleccionarOpcion);
+				String seleccionarOpcion = pedirInput("");
 				switch (seleccionarOpcion) {
 				case "1" -> {
 					agregarVehiculo(listaVehiculos);
@@ -55,30 +54,36 @@ public class GestorFlota {
 				}
 				default -> {
 					System.out.println("El valor introducido no es válido. Inténtalo de nuevo.");
-					continuarOperacion = true;
 				}
 				}
 			} catch (CancelarOperacionException e) {
 				System.out.println("¡Gracias por utilizar nuestros servicios!");
+				// Comando que detiene el funcionamiento del programa
 				System.exit(0);
 			}
 		}
 
 	}
 
-	private static void pedirInput(String input) throws CancelarOperacionException {
-		if (input.equals("0")) {
+	// Método que obtiene un input tipo String por parte del usuario; si equivale a
+	// 0, obliga al método que lo llame a lanzar una excepción que cancela la
+	// operación en curso y devuelve al usuario al menú principal del gestor de
+	// vehículos
+	private static String pedirInput(String mensaje) throws CancelarOperacionException {
+		System.out.println(mensaje);
+		String inputUsuario = input.nextLine();
+		if (inputUsuario.equals("0")) {
 			throw new CancelarOperacionException("");
+		} else {
+			return inputUsuario;
 		}
 	}
 
+	// Método que agrega vehículos al gestor
 	private static void agregarVehiculo(List<Vehiculo> listaVehiculos) {
-		System.out.println(
-				"Indica si quieres registrar un coche (1) o una moto (2): \n(Presiona 0 en cualquier momento para cancelar la operación)");
+
 		Nombre nombre = null;
-		String matricula = null;
-		String marca = null;
-		String modelo = null;
+		String matricula, marca, modelo = null;
 		double velocidadMaxima = 0;
 		TipoCambio tipoCambio;
 		TipoCombustible tipoCombustible;
@@ -86,85 +91,87 @@ public class GestorFlota {
 		Cilindrada cilindrada;
 
 		while (true) {
+			System.out.println(
+					"Indica si quieres registrar un coche (1) o una moto (2): \n(Pulsa 0 en cualquier momento para cancelar la operación)");
+
 			try {
-				pedirInput(seleccionarOpcion);
+				String seleccionarOpcion = pedirInput("");
+				// Condicional que evalúa el valor de seleccionarOpcion y, en función de este (1
+				// o 2), asigna uno de los dos valores disponibles (coche o moto) a la variable
+				// Nombre (Enum):
 				if (seleccionarOpcion.equals("1")) {
 					nombre = Nombre.COCHE;
-					break;
 				} else if (seleccionarOpcion.equals("2")) {
 					nombre = Nombre.MOTO;
-					break;
 				} else {
 					System.out.println("Opción no válida. Inténtalo de nuevo: ");
+					// Sentencia que evita que las siguientes líneas de código dentro del bucle se
+					// ejecuten hasta que se introduzca un valor válido en seleccionarOpcion:
+					continue;
 				}
-				System.out.println("Escribe la matrícula: ");
-				String matriculaUsuario = input.nextLine().toUpperCase().trim().replace(" ", "");
-				pedirInput(matriculaUsuario);
-				matricula = validarMatricula(matriculaUsuario);
-				System.out.println("Introduce la marca: ");
-				marca = input.nextLine().toUpperCase().trim();
-				pedirInput(marca);
-				System.out.println("Indica el modelo: ");
-				modelo = input.nextLine().toUpperCase().trim();
-				pedirInput(modelo);
-				System.out.println("Introduce su velocidad máxima: ");
-				String velocidadMaximaUsuario = input.nextLine();
-				velocidadMaxima = validarVelocidadMaxima(velocidadMaximaUsuario);
+
+				// Asignación de valores a los atributos comunes a coche y moto
+				matricula = validarMatricula(comprobarMatriculaRegistrada().toUpperCase().trim().replace(" ", ""));
+				marca = pedirInput("Introduce la marca: ").toUpperCase().trim();
+				modelo = pedirInput("Indica el modelo: ").toUpperCase().trim();
+				velocidadMaxima = validarVelocidadMaxima(pedirInput("Introduce su velocidad máxima: "));
+
+				// Asignación de valores a los atributos específicos de coche (empleando el
+				// valor anteriormente indicado en seleccionarOpcion):
+				switch (seleccionarOpcion) {
+				case "1" -> {
+					tipoCambio = elegirTipoCambio();
+					tipoCombustible = elegirTipoCombustibleCoche();
+					numeroPuertas = elegirNumeroPuertas();
+
+					// Creación del nuevo objeto Coche, adición a listaVehiculos y actualización del
+					// fichero
+					Vehiculo v = new Coche(nombre, matricula, marca, modelo, velocidadMaxima, tipoCambio,
+							tipoCombustible, numeroPuertas);
+					listaVehiculos.add(v);
+					System.out.println("Vehículo añadido con éxito. ");
+					try {
+						GestorFichero.guardarEnFichero(listaVehiculos);
+					} catch (IOException e) {
+						System.out.println("Error al guardar el fichero." + e.getMessage());
+					}
+					return;
+				}
+
+				// Asignación de valores a los atributos específicos de moto (empleando el valor
+				// anteriormente indicado en seleccionarOpcion):
+				case "2" -> {
+					tipoCombustible = elegirTipoCombustibleMoto();
+					cilindrada = elegirCilindrada();
+
+					// Creación del nuevo objeto Moto, adición a listaVehiculos y actualización del
+					// fichero
+					Vehiculo v = new Moto(nombre, matricula, marca, modelo, velocidadMaxima, tipoCombustible,
+							cilindrada);
+					listaVehiculos.add(v);
+					System.out.println("Vehículo añadido con éxito. ");
+					try {
+						GestorFichero.guardarEnFichero(listaVehiculos);
+					} catch (IOException e) {
+						System.out.println("Error al guardar el fichero." + e.getMessage());
+					}
+					return;
+				}
+				default -> {
+					System.out.println("Opción no válida. Inténtalo de nuevo: ");
+				}
+				}
 			} catch (CancelarOperacionException e) {
 				System.out.println("Operación cancelada. ");
-				break;
+				return;
 			}
-			while (true) {
-				try {
-					pedirInput(seleccionarOpcion);
-					switch (seleccionarOpcion) {
-					case "1" -> {
-						System.out.println("Selecciona si el tipo de cambio es manual (1) o automático (2): ");
-						tipoCambio = elegirTipoCambio();
-						pedirInput(String.valueOf(tipoCambio));
-						System.out.println(
-								"Indica si el tipo de combustible es gasolina (1), diésel (2), híbrido (3) o eléctrico (4): ");
-						tipoCombustible = elegirTipoCombustibleCoche();
-						pedirInput(String.valueOf(tipoCombustible));
-						System.out.println("Finalmente, introduce el número de puertas (2, 3, 4 o 5): ");
-						numeroPuertas = elegirNumeroPuertas();
-						pedirInput(String.valueOf(numeroPuertas));
-						Vehiculo v = new Coche(nombre, matricula, marca, modelo, velocidadMaxima, tipoCambio,
-								tipoCombustible, numeroPuertas);
-						listaVehiculos.add(v);
-						System.out.println("Vehículo añadido con éxito. ");
-						GestorFichero.guardarEnFichero(listaVehiculos);
-					}
-
-					case "2" -> {
-						System.out.println("Indica si el tipo de combustible es gasolina (1) o eléctrico (2): ");
-						tipoCombustible = elegirTipoCombustibleMoto();
-						pedirInput(String.valueOf(tipoCombustible));
-						System.out.println(
-								"Finalmente, selecciona si el tipo de cilindrada es baja (1), media (2), alta (3) o muy alta (4): ");
-						cilindrada = elegirCilindrada();
-						pedirInput(String.valueOf(cilindrada));
-						input.nextLine();
-						Vehiculo v = new Moto(nombre, matricula, marca, modelo, velocidadMaxima, tipoCombustible,
-								cilindrada);
-						listaVehiculos.add(v);
-						System.out.println("Vehículo añadido con éxito. ");
-						GestorFichero.guardarEnFichero(listaVehiculos);
-					}
-					default -> {
-						System.out.println("Opción no válida. Inténtalo de nuevo: ");
-					}
-					}
-				} catch (CancelarOperacionException e) {
-					System.out.println("Operación cancelada. ");
-					break;
-				}
-			}
-
 		}
+
 	}
 
-	private static TipoCambio elegirTipoCambio() {
+	// Método en el que el usuario elige el tipo de cambio del coche
+	private static TipoCambio elegirTipoCambio() throws CancelarOperacionException {
+		String seleccionarOpcion = pedirInput("Selecciona si el tipo de cambio es manual (1) o automático (2): ");
 		switch (seleccionarOpcion) {
 		case "1" -> {
 			return TipoCambio.MANUAL;
@@ -180,8 +187,10 @@ public class GestorFlota {
 
 	}
 
-	private static TipoCombustible elegirTipoCombustibleCoche() {
-		seleccionarOpcion = input.nextLine();
+	// Método en el que el usuario elige el tipo de combustible del coche
+	private static TipoCombustible elegirTipoCombustibleCoche() throws CancelarOperacionException {
+		String seleccionarOpcion = pedirInput(
+				"Indica si el tipo de combustible es gasolina (1), diésel (2), híbrido (3) o eléctrico (4): ");
 		switch (seleccionarOpcion) {
 		case "1" -> {
 			return TipoCombustible.GASOLINA;
@@ -202,8 +211,9 @@ public class GestorFlota {
 		}
 	}
 
-	private static NumeroPuertas elegirNumeroPuertas() {
-		seleccionarOpcion = input.nextLine();
+	// Método en el que el usuario elige número de puertas del coche
+	private static NumeroPuertas elegirNumeroPuertas() throws CancelarOperacionException {
+		String seleccionarOpcion = pedirInput("Finalmente, introduce el número de puertas (2, 3, 4 o 5): ");
 
 		switch (seleccionarOpcion) {
 		case "2" -> {
@@ -225,9 +235,9 @@ public class GestorFlota {
 		}
 	}
 
-	private static TipoCombustible elegirTipoCombustibleMoto() {
-
-		seleccionarOpcion = input.nextLine();
+	// Método en el que el usuario elige el tipo de combustible de la moto
+	private static TipoCombustible elegirTipoCombustibleMoto() throws CancelarOperacionException {
+		String seleccionarOpcion = pedirInput("Indica si el tipo de combustible es gasolina (1) o eléctrico (2): ");
 		switch (seleccionarOpcion) {
 		case "1" -> {
 			return TipoCombustible.GASOLINA;
@@ -243,8 +253,10 @@ public class GestorFlota {
 
 	}
 
-	private static Cilindrada elegirCilindrada() {
-		seleccionarOpcion = input.nextLine();
+	// Método en el que el usuario elige el tipo de cilindrada de la moto
+	private static Cilindrada elegirCilindrada() throws CancelarOperacionException {
+		String seleccionarOpcion = pedirInput(
+				"Finalmente, selecciona si el tipo de cilindrada es baja (1), media (2), alta (3) o muy alta (4): ");
 		switch (seleccionarOpcion) {
 		case "1" -> {
 			return Cilindrada.BAJA_CILINDRADA;
@@ -266,26 +278,21 @@ public class GestorFlota {
 
 	}
 
-	private static void buscarVehiculo(List<Vehiculo> listaVehiculos) {
-		input.nextLine();
-		System.out.println("Introduce la matrícula del vehículo que quieres buscar: ");
-		String matriculaUsuario = input.nextLine().toUpperCase().trim().replace(" ", "");
-		String matricula = validarMatricula(matriculaUsuario);
-		Vehiculo vehiculoEncontrado = null;
-		for (Vehiculo v : listaVehiculos) {
-			if (v.getMatricula().equalsIgnoreCase(matricula)) {
-				vehiculoEncontrado = v;
-				break;
-			}
-		}
-		if (vehiculoEncontrado != null) {
-			System.out.println("Información del vehículo: \n");
-			vehiculoEncontrado.mostrarInformacion();
+	// Método que permite comprobar si la matrícula indicada por el usuario ya se
+	// encuentra registrada en el sistema
+	private static String comprobarMatriculaRegistrada() throws CancelarOperacionException {
+		final String matricula = pedirInput("Escribe la matrícula: ");
+		if (listaVehiculos.stream().anyMatch(v -> v.getMatricula().equalsIgnoreCase(matricula))) {
+			System.out.println(
+					"La matrícula indicada ya se encuentra registrada en nuestro sistema. Inténtalo otra vez: ");
+			return comprobarMatriculaRegistrada();
 		} else {
-			System.out.println("No se encuentra ningún vehículo con la matrícula ingresada. ");
+			return matricula;
 		}
 	}
 
+	// Método que permite comprobar la validez de una matrícula (española) a partir
+	// del cumplimiento de una serie de requisitos
 	private static String validarMatricula(String matriculaUsuario) {
 
 		if (matriculaUsuario.length() == 6) {
@@ -370,6 +377,39 @@ public class GestorFlota {
 		}
 	}
 
+	// Método que permite encontrar un vehículo a partir de su matrícula (tras
+	// emplear el validador)
+	private static void buscarVehiculo(List<Vehiculo> listaVehiculos) {
+		try {
+			String matricula = validarMatricula((pedirInput(
+					"Introduce la matrícula del vehículo que quieres buscar: \n(Pulsa 0 en cualquier momento para cancelar la operación) ")
+					.toUpperCase().trim().replace(" ", "")));
+			Vehiculo v = vehiculoEncontrado(matricula, listaVehiculos);
+			if (v != null) {
+				System.out.println("Información del vehículo: \n");
+				v.mostrarInformacion();
+			} else {
+				System.out.println("No se ha encontrado ningún vehículo con la matrícula ingresada. ");
+			}
+		} catch (CancelarOperacionException e) {
+			System.out.println("Operación cancelada");
+			return;
+		}
+	}
+
+	// Método que devuelve un vehículo de la lista a partir de su matrícula, o nulo
+	// si no se encuentra en ella
+	private static Vehiculo vehiculoEncontrado(String matricula, List<Vehiculo> listaVehiculos) {
+		for (Vehiculo v : listaVehiculos) {
+			if (v.getMatricula().equalsIgnoreCase(matricula)) {
+				return v;
+			}
+		}
+		return null;
+	}
+
+	// Método que permite comprobar si el valor introducido por el usuario para la
+	// velocidad máxima es válido
 	private static double validarVelocidadMaxima(String velocidadMaximaUsuario) {
 
 		while (true) {
@@ -387,95 +427,121 @@ public class GestorFlota {
 		}
 	}
 
+	// Método con el cual se elimina un vehículo a partir de la matrícula indicada
+	// por el usuario
 	private static void eliminarVehiculo(List<Vehiculo> listaVehiculos) {
-		input.nextLine();
-		System.out.println("Introduce la matrícula del vehículo a eliminar: ");
-		String matriculaUsuario = input.nextLine().toUpperCase().trim().replace(" ", "");
-		String matriculaValidada = validarMatricula(matriculaUsuario);
-		Vehiculo vehiculoEncontrado = null;
-		for (Vehiculo v : listaVehiculos) {
-			if (v.getMatricula().equalsIgnoreCase(matriculaValidada)) {
-				vehiculoEncontrado = v;
-				break;
-			}
-		}
+		try {
+			String matriculaValidada = validarMatricula((pedirInput(
+					"Introduce la matrícula del vehículo a eliminar: \n(Pulsa 0 en cualquier momento para cancelar la operación) ")
+					.toUpperCase().trim().replace(" ", "")));
+			Vehiculo v = vehiculoEncontrado(matriculaValidada, listaVehiculos);
+			if (v == null) {
+				System.out.println(
+						"No se ha podido eliminar el vehículo solicitado porque no se encuentra registrado en nuestro sistema. ");
+			} else {
+				System.out.println("\nInformación del vehículo encontrado: \n");
+				v.mostrarInformacion();
 
-		if (vehiculoEncontrado == null) {
-			System.out.println(
-					"No se ha podido eliminar el vehículo solicitado porque no se encuentra registrado en nuestro sistema. ");
-		} else {
-			System.out.println("\n Información del vehículo encontrado: \n");
-			vehiculoEncontrado.mostrarInformacion();
-			System.out.println("\n ¿Quieres confirmar la eliminación? (s/n): ");
-			String confirmar = input.nextLine();
-			while (true) {
-				if (confirmar.equalsIgnoreCase("s")) {
-					listaVehiculos.remove(vehiculoEncontrado);
-					System.out.println("Vehículo eliminado con éxito. ");
-					GestorFichero.guardarEnFichero(listaVehiculos);
-					break;
-				} else if (confirmar.equalsIgnoreCase("n")) {
-					System.out.println("Operación cancelada. ");
-					return;
-				} else {
-					System.out.println("Respuesta no válida. Inténtalo de nuevo: ");
-					confirmar = input.nextLine();
+				while (true) {
+					String confirmar = pedirInput("\n¿Quieres confirmar la eliminación? (s/n): ");
+					if (confirmar.equalsIgnoreCase("s")) {
+						listaVehiculos.remove(v);
+						System.out.println("Vehículo eliminado con éxito. ");
+						try {
+							GestorFichero.guardarEnFichero(listaVehiculos);
+						} catch (IOException e) {
+							System.out.println("Error al guardar el fichero." + e.getMessage());
+						}
+						return;
+					} else if (confirmar.equalsIgnoreCase("n")) {
+						System.out.println("Operación cancelada. ");
+						return;
+					} else {
+						System.out.println("Respuesta no válida. Inténtalo de nuevo: ");
+					}
 				}
-			}
 
+			}
+		} catch (CancelarOperacionException e) {
+			System.out.println("Operación cancelada.");
+			return;
 		}
 	}
 
+	// Método que lista los vehículos registrados en el sistema y su información, ya
+	// sean solo coches, solo motos o ambos
 	private static void mostrarVehiculos(List<Vehiculo> listaVehiculos) {
 		System.out.println(
-				"Indica si quieres consultar la información de los coches (1), de las motos (2) o de todos los vehículos (3): ");
+				"Indica si quieres consultar la información de los coches (1), de las motos (2) o de todos los vehículos (3): \n(Pulsa 0 en cualquier momento para cancelar la operación)");
 		while (true) {
-			seleccionarOpcion = input.nextLine();
-			int contador = 1;
-			switch (seleccionarOpcion) {
-			case "1" -> {
-				for (Vehiculo v : listaVehiculos) {
-					if (v instanceof Coche) {
-						System.out.println("Información del coche " + contador + ":");
-						v.mostrarInformacion();
-						contador++;
-						System.out.println("\n");
+			try {
+				String inputUsuario = pedirInput("");
+				int contador = 1;
+				boolean existente = false;
+				switch (inputUsuario) {
+				case "1" -> {
+					for (Vehiculo v : listaVehiculos) {
+						if (v instanceof Coche) {
+							System.out.println("Información del coche " + contador + ":");
+							v.mostrarInformacion();
+							existente = true;
+							contador++;
+							System.out.println("\n");
+						}
 					}
-				}
-			}
-			case "2" -> {
-				System.out.println("Motos registradas: ");
-				for (Vehiculo v : listaVehiculos) {
-					if (v instanceof Moto) {
-						System.out.println("Información de la moto " + contador + ": ");
-						v.mostrarInformacion();
-						contador++;
-						System.out.println("\n");
+					if (!existente) {
+						System.out.println("No se ha encontrado ningún coche registrado en nuestro sistema. ");
+
 					}
+					return;
 				}
-			}
-			case "3" -> {
-				for (Vehiculo v : listaVehiculos) {
-					System.out.println("Información del vehículo " + contador + ": ");
-					v.mostrarInformacion();
-					contador++;
-					System.out.println("\n");
+				case "2" -> {
+					for (Vehiculo v : listaVehiculos) {
+						if (v instanceof Moto) {
+							System.out.println("Información de la moto " + contador + ": ");
+							v.mostrarInformacion();
+							existente = true;
+							contador++;
+							System.out.println("\n");
+						}
+					}
+					if (!existente) {
+						System.out.println("No se ha encontrado ninguna moto registrada en nuestro sistema. ");
+					}
+					return;
 				}
-			}
-			default -> {
-				System.out.println("Opción no válida. Inténtalo de nuevo: ");
-				seleccionarOpcion = input.nextLine();
-			}
+				case "3" -> {
+					for (Vehiculo v : listaVehiculos) {
+						if (!listaVehiculos.isEmpty()) {
+							System.out.println("Información del vehículo " + contador + ": ");
+							v.mostrarInformacion();
+							existente = true;
+							contador++;
+							System.out.println("\n");
+						}
+					}
+					if (!existente) {
+						System.out.println("No se ha encontrado ningún vehículo registrado en nuestro sistema. ");
+					}
+					return;
+				}
+				default -> {
+					System.out.println("Opción no válida. Inténtalo de nuevo: ");
+				}
+				}
+			} catch (CancelarOperacionException e) {
+				System.out.println("Operación cancelada.");
+				return;
 			}
 		}
 
 	}
 
-	private static void continuarOperando() {
-		String respuestaUsuario;
-		System.out.println("¿Quieres realizar otra operación? (s/n)");
+	// Método que pregunta al usuario si desea seguir realizando operaciones del
+	// gestor o interrumpir su funcionamiento
+	private static void continuarOperando() throws CancelarOperacionException {
 		while (true) {
-			respuestaUsuario = input.nextLine();
+			String respuestaUsuario = pedirInput("¿Quieres realizar otra operación? (s/n): ");
 			if (respuestaUsuario.equalsIgnoreCase("s"))
 				return;
 			else if (respuestaUsuario.equalsIgnoreCase("n")) {
